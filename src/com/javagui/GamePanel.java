@@ -1,11 +1,14 @@
 package com.javagui;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 import javax.swing.JPanel;
 
@@ -13,7 +16,7 @@ public class GamePanel extends JPanel
 implements ActionListener {
 
     static final int SCREEN_WIDTH = 600;
-    static final int SCREEN_HEIGHT = 650;
+    static final int SCREEN_HEIGHT = 600;
     static final int UNIT_SIZE = 25;
     static final int GAME_UNITS =
             (SCREEN_WIDTH * SCREEN_HEIGHT)/UNIT_SIZE;
@@ -28,7 +31,11 @@ implements ActionListener {
     boolean running = false;
     Timer timer;
     Random random;
-
+    String musicPath = "D:\\david\\JavaExamples\\580898__bloodpixelhero__in-game.wav" +
+            "" +
+            "" +
+            "" +
+            "";
 
 
     GamePanel(){
@@ -53,6 +60,7 @@ implements ActionListener {
         running = true;
         timer = new Timer(DELAY, this);
         timer.start();
+        playSound(musicPath);
     }
 
     public void newApple(){
@@ -137,12 +145,69 @@ implements ActionListener {
         }
     }
 
+    public void playSound(String path){
+        File file = new File(path);
+        System.out.println(path);
+        System.out.println(file.exists());
+        try {
+            AudioInputStream audioStream =
+                    AudioSystem.getAudioInputStream(
+                            file
+                    );
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+
+        }catch (
+                UnsupportedAudioFileException e){
+            System.out.println(e);
+        }catch (
+                IOException e){
+            System.out.println(e);
+        }catch(
+                LineUnavailableException e){
+            System.out.println(e);
+        }
+
+    }
+
+    public void playBiteSound(){
+
+        File file = new File(
+                "D:\\david\\JavaExamples\\471620__puerta118m__bite.wav");
+        System.out.println(file.exists());
+        try {
+            AudioInputStream audioStream =
+                    AudioSystem.getAudioInputStream(
+                            file
+                    );
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+
+        }catch (
+                UnsupportedAudioFileException e){
+            System.out.println(e);
+        }catch (
+                IOException e){
+            System.out.println(e);
+        }catch(
+                LineUnavailableException e){
+            System.out.println(e);
+        }
+
+
+    }
+
     public void checkApple(){
         if(x[0] == appleX &&
         y[0] == appleY){
+            playBiteSound();
             bodyParts++;
             applesEaten++;
             newApple();
+
+
         }
     }
 
@@ -201,6 +266,35 @@ implements ActionListener {
                 75,
                 "middle",
                 "middle");
+
+
+        File file = new File(
+                "D:\\david\\JavaExamples\\7764__ls__strings.wav");
+        System.out.println(file.exists());
+        try {
+            AudioInputStream audioStream =
+                    AudioSystem.getAudioInputStream(
+                            file
+                    );
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+            if(clip.isActive() || clip.isRunning()) {
+                clip.stop();
+                clip.flush();
+            }
+
+        }catch (
+            UnsupportedAudioFileException e){
+
+        }catch (
+             IOException e){
+
+        }catch(
+             LineUnavailableException e){
+
+        }
+
 
     }
 
