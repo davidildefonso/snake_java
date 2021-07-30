@@ -9,6 +9,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Random;
 import javax.swing.JPanel;
 
@@ -31,12 +32,13 @@ implements ActionListener {
     boolean running = false;
     Timer timer;
     Random random;
-    String musicPath = "D:\\david\\JavaExamples\\580898__bloodpixelhero__in-game.wav" +
-            "" +
-            "" +
-            "" +
-            "";
-
+    String musicPath = "D:\\david\\JavaExamples\\580898__bloodpixelhero__in-game.wav";
+    AudioPlayer bgMusic;
+    AudioPlayer biteSound;
+    AudioPlayer gameOverSound;
+    String biteSoundPath = "D:\\david\\JavaExamples\\471620__puerta118m__bite.wav";
+    String gameOverPath = "D:\\david\\JavaExamples\\7764__ls__strings.wav";
+    HashMap<String, AudioPlayer> soundEffects;
 
     GamePanel(){
         random = new Random();
@@ -53,6 +55,12 @@ implements ActionListener {
         this.addKeyListener(new MyKeyAdapter());
         startGame();
 
+        soundEffects = new HashMap<
+                String, AudioPlayer>();
+        soundEffects.put("bite",
+                new AudioPlayer(biteSoundPath));
+        soundEffects.put("gameOver",
+                new AudioPlayer(gameOverPath));
     }
 
     public void startGame(){
@@ -60,7 +68,9 @@ implements ActionListener {
         running = true;
         timer = new Timer(DELAY, this);
         timer.start();
-        playSound(musicPath);
+        //playSound(musicPath);
+        bgMusic = new AudioPlayer(musicPath);
+        bgMusic.play();
     }
 
     public void newApple(){
@@ -202,7 +212,11 @@ implements ActionListener {
     public void checkApple(){
         if(x[0] == appleX &&
         y[0] == appleY){
-            playBiteSound();
+           // playBiteSound();
+            bgMusic.stop();
+            biteSound = new AudioPlayer(biteSoundPath);
+            biteSound.play();
+            bgMusic.play();
             bodyParts++;
             applesEaten++;
             newApple();
@@ -267,33 +281,9 @@ implements ActionListener {
                 "middle",
                 "middle");
 
-
-        File file = new File(
-                "D:\\david\\JavaExamples\\7764__ls__strings.wav");
-        System.out.println(file.exists());
-        try {
-            AudioInputStream audioStream =
-                    AudioSystem.getAudioInputStream(
-                            file
-                    );
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            clip.start();
-            if(clip.isActive() || clip.isRunning()) {
-                clip.stop();
-                clip.flush();
-            }
-
-        }catch (
-            UnsupportedAudioFileException e){
-
-        }catch (
-             IOException e){
-
-        }catch(
-             LineUnavailableException e){
-
-        }
+        bgMusic.close();
+        gameOverSound = new AudioPlayer(gameOverPath);
+        gameOverSound.play();
 
 
     }
